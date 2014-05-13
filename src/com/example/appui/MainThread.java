@@ -1,3 +1,8 @@
+ /*
+  *Handles the thread running the game
+  *@author Rohin Patel (unless otherwise indicated)
+  *Elements taken from tutorial Obviam.net
+  */
 package com.example.appui;
 
 import android.graphics.Canvas;
@@ -11,9 +16,9 @@ public class MainThread extends Thread {
 	private MainGamePanel gamePanel;
 	// flag to hold gamestate
 	private boolean running;
-	public int h;
-	public int w;
-
+	
+	
+	
 	public MainThread(SurfaceHolder surfaceHolder, MainGamePanel gamePanel) {
 		super();
 		this.surfaceHolder = surfaceHolder;
@@ -40,10 +45,10 @@ public class MainThread extends Thread {
 						}
 						// update game state
 						// draw canvas on panel
-
+						gamePanel.scoreboard();
 						this.gamePanel.onDraw(canvas);
 						gamePanel.moveAI();
-						gamePanel.updateBall();
+						gamePanel.ballBoundaries();
 
 					}
 				}

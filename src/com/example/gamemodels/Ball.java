@@ -1,11 +1,12 @@
+ /*
+  *Contains attributes of the Ball object
+  *@author Rohin Patel (unless otherwise indicated)
+  *Elements taken from tutorial Obviam.net
+  */
 package com.example.gamemodels;
-
-import com.example.appui.SIGame;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
 
 public class Ball {
 
@@ -118,21 +119,5 @@ public class Ball {
 
 
 	
-	public boolean isMaxDx() {
-		if (getDx() >= 15) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-	public boolean isMaxDy() {
-		if (getDy() >= 15) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 
 }
