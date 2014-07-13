@@ -3,6 +3,7 @@ package com.example.appui;
 import com.example.appui.R;
 
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
@@ -20,6 +21,8 @@ public class MainActivity extends Activity {
 		
 		// Set Content view
 		setContentView(R.layout.activity_main);
+		ActionBar actionBar = getActionBar();
+		actionBar.hide();
 	}
 
 	@Override

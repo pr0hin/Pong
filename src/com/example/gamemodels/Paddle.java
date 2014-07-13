@@ -1,4 +1,4 @@
- /*
+ /**
   *Contains the attributes of the player controlled Paddle object
   *@author Rohin Patel (unless otherwise indicated)
   *Elements taken from tutorial Obviam.net

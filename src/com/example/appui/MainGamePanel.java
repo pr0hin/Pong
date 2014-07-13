@@ -290,8 +290,8 @@ public class MainGamePanel extends SurfaceView implements
 
 		int impactdistance = ball.getY() - ball.getRadius() - AI.getY();
 		int impactTime = (int) (impactdistance / (ball.getDy()
-				* ball.getYDirection()));
-		int targetX = (int) (ball.getX() + (ball.getDx() * ball.getXDirection())
+				* ball.getYDirection()*1000));
+		int targetX = (int) (ball.getX() + (ball.getDx() * ball.getXDirection() * 1000)
 				* impactTime);
 
 		if (targetX > AI.getX() + AI.width / 4) {

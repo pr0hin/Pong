@@ -2,4 +2,10 @@
 <resources>
     <color name="burnt_orange">#f09d29</color>
     <color name="white">#ffffff</color>
+    <color name="sunflower">#F1C40F</color>
+    <color name="auzarin">#e74c3c</color> 
+    <color name="clouds">#ECF0F1</color>
+    <color name="peterriver">#3498dB</color> 
+    <color name="emerald">#2ecc71</color>
         </resources>
+        

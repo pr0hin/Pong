@@ -11,7 +11,12 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
+        public static final int auzarin=0x7f050003;
         public static final int burnt_orange=0x7f050000;
+        public static final int clouds=0x7f050004;
+        public static final int emerald=0x7f050006;
+        public static final int peterriver=0x7f050005;
+        public static final int sunflower=0x7f050002;
         public static final int white=0x7f050001;
     }
     public static final class dimen {
@@ -30,11 +35,14 @@ public final class R {
         public static final int ic_action_search=0x7f020002;
         public static final int ic_launcher=0x7f020003;
         public static final int paddle=0x7f020004;
+        public static final int title=0x7f020005;
     }
     public static final class id {
-        public static final int action_search=0x7f0a0003;
-        public static final int action_settings=0x7f0a0002;
-        public static final int shape=0x7f0a0001;
+        public static final int action_search=0x7f0a0005;
+        public static final int action_settings=0x7f0a0004;
+        public static final int button1=0x7f0a0001;
+        public static final int imageView1=0x7f0a0002;
+        public static final int shape=0x7f0a0003;
         public static final int startbutton=0x7f0a0000;
     }
     public static final class layout {
