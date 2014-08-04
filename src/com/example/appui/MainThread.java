@@ -32,36 +32,42 @@ public class MainThread extends Thread {
 	public void run() {
 		Canvas canvas;
 		Log.d(TAG, "Starting game loop...");
+		long previous = System.currentTimeMillis();
+		long lag = 0;
 		while (running) {
 			canvas = null;
-			long starttime = System.currentTimeMillis();
 			// try locking the canvas for exclusive pixel editing
 			try {
 				canvas = this.surfaceHolder.lockCanvas();
+                long current = System.currentTimeMillis();
+				long elapsed = current - previous;
+				previous = current;
+				lag += elapsed;
 				if (canvas != null) {
 					synchronized (surfaceHolder) {
-						if (gamePanel.touchingWall()) {
-
-						}
+						while (lag >= 14) {
 						// update game state
-						// draw canvas on panel
-						gamePanel.scoreboard();
-						this.gamePanel.onDraw(canvas);
-						gamePanel.moveAI();
-						gamePanel.ballBoundaries();
-
+						gamePanel.update();
+						lag -= 14;
+						}
+						// render updated gamestate 
+						gamePanel.onDraw(canvas);
 					}
 				}
-			} finally {
+			}
+			catch (Exception e) {
+				System.out.println(e.getMessage());
+			}	
+				finally {
+			}
 				// in case of an exception the surface is not left in
 				// inconsistent state
 				if (canvas != null) {
 					surfaceHolder.unlockCanvasAndPost(canvas);
 				}
 			}
-			long sleeptime = 1000 - (System.currentTimeMillis() - starttime);
 
 		}
 
 	}
-}
+

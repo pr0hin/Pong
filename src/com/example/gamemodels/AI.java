@@ -7,45 +7,30 @@ package com.example.gamemodels;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
-public class AI {
+public class AI extends AbstractModel {
 
-	private int x; // x position of AIpaddle
-	private int y; // y position of AIpaddle
-	private Bitmap img;
-	public int width;
-	public int height;
+
 	private double dx;
-
+	private int score = 0;
+	Paint paint = new Paint();
 	private int LEFT_DIRECTION = -1;
 	private int RIGHT_DIRECTION = 1;
 	private int xDirection = RIGHT_DIRECTION;
 
 	public AI(Bitmap img, int x, int y, double d) {
-		this.setImg(img);
-		this.x = x;
-		this.y = y;
+		super(img,x,y);
 		this.dx = d;
-		this.width = img.getWidth();
-		this.height = img.getHeight();
+		int ar = Color.argb(255, 52, 152, 219);
+		paint.setColor(ar);
+		paint.setFakeBoldText(true);
+		paint.setTextAlign(Paint.Align.CENTER);
 
+		
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
 
 	public double getDX() {
 		return dx;
@@ -63,22 +48,19 @@ public class AI {
 		this.xDirection = xDirection;
 	}
 
-	public Bitmap getImg() {
-		return img;
-	}
 
-	public void setImg(Bitmap img) {
-		this.img = img;
-	}
 
 	public void draw(Canvas canvas) {
-		canvas.drawBitmap(img, x - (img.getWidth() / 2), y
-				- (img.getHeight() / 2), null);
-
+		canvas.drawBitmap(getImg(), getX() - (getImg().getWidth() / 2), getY()
+				- (getImg().getHeight() / 2), null);
+		String textscore = Integer.toString(score);
+		paint.setTextSize(canvas.getHeight() / 6);
+		canvas.drawText(textscore, canvas.getWidth()/2, canvas.getHeight()/2 + 300, paint);
+		
 	}
 
 	public void update(int xDirection) {
-		x += (this.getDX() * xDirection);
+		setX((int)(getX() + this.getDX() * xDirection));
 
 	}
 
@@ -87,6 +69,14 @@ public class AI {
 		this.dx= dx;
 		// TODO Auto-generated method stub
 		
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore() {
+		score++;
 	}
 
 	// TODO Auto-generated constructor stub

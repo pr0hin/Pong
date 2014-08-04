@@ -5,49 +5,33 @@
   */
 package com.example.gamemodels;
 
+import android.R;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
-public class Paddle{
+public class Paddle extends AbstractModel{
 	
-	private int x; // x position of paddle
-	private int y; // y position of paddle
+
 	private boolean touched; // return true if touched
-	private Bitmap img;
-	public int width;
-	public int height;
-    
+
+    private int score = 0;
+    private Paint paint = new Paint();
 
 	public Paddle(Bitmap img, int x, int y) {
-		this.setImg(img);
-		this.x = x;
-		this.y = y;
-		this.width = img.getWidth();
-		this.height= img.getHeight();
-		
+		super(img,x,y);
+
+		int ar = Color.argb(255, 230, 126, 34);
+		paint.setFakeBoldText(true);
+		paint.setColor(ar);
+		paint.setTextAlign(Paint.Align.CENTER);
 
 		
 	}
 
 
-	public int getX() {
-		return x;
-	}
 
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-
-	public int getY() {
-		return y;
-	}
-
-
-	public void setY(int y) {
-		this.y = y;
-	}
 	
 	public boolean isTouched() {
 		return touched;
@@ -59,28 +43,23 @@ public class Paddle{
 
 	public int centerX() {
 		int sum;
-		sum = getX() - this.width / 2;
+		sum = getX() - this.getWidth() / 2;
 		return sum;
 	}
 
 
-	public Bitmap getImg() {
-		return img;
-	}
 
-
-	public void setImg(Bitmap img) {
-		this.img = img;
-	}
 
 	public void draw(Canvas canvas) {
-		canvas.drawBitmap(img, x - (img.getWidth() / 2), y - (img.getHeight() / 2), null);
-		
+		canvas.drawBitmap(this.getImg(), getX() - (this.getImg().getWidth() / 2), getY() - (this.getImg().getHeight() / 2), null);
+		String textscore = Integer.toString(score);
+		paint.setTextSize(canvas.getHeight() / 6);
+		canvas.drawText(textscore, canvas.getWidth()/2, canvas.getHeight()/2 - 200, paint);
 	}
 	
 	public void handleOnPressure(int eventX, int eventY) {
 		// x - imgwidth/2 = boundary to left of image, x + imgwidth/2 = boundary to right of image
-		if ( (eventX >= (x - img.getWidth() / 2)) && (eventX <= (x + img.getWidth() / 2)) ) {
+		if ( (eventX >= (getX() - getImg().getWidth() / 2)) && (eventX <= (getX() + getImg().getWidth() / 2)) ) {
 			// y - imgheight/2 = boundary above image, y + imgheight/2 = boundary below image
 		
 			
@@ -90,6 +69,16 @@ public class Paddle{
 				setTouched(false);
 			}
 		}
+
+
+	public int getScore() {
+		return score;
+	}
+
+
+	public void setScore() {
+		score++;
+	}
 	
 
 	}

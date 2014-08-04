@@ -8,59 +8,32 @@ package com.example.gamemodels;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-public class Ball {
+public class Ball extends AbstractModel {
 
-	public int x; // x position of ball
-	public int y; // y position of ball
-	private float dx = 1;
-	private float dy = 1;
+
+	private double dx;
+	private double dy;
 	public static final int DIRECTION_LEFT = -1;
 	public static final int DIRECTION_RIGHT = 1;
 	public static final int DIRECTION_DOWN = 1;
 	public static final int DIRECTION_UP = -1;
-
-	public Bitmap ball;
+	private int angle;
 	private int radius;
 	private int xDirection = DIRECTION_RIGHT;
 	private int yDirection = DIRECTION_DOWN;
 
-	public Ball(Bitmap ball, int x, int y, float dx, float dy) {
-		this.ball = ball;
-		this.x = x;
-		this.y = y;
-		this.setDx(dx);
-		this.setDy(dy);
+	public Ball(Bitmap ball, int x, int y, int angle) {
+		super(ball, x, y);
 		setRadius(ball.getHeight() / 2);
-
+		setAngle(angle);
 	}
 
-	public Bitmap getBall() {
-		return ball;
-	}
 
-	public void setBall(Bitmap ball) {
-		this.ball = ball;
-	}
 
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
-		this.y = y;
-	}
-
+	
 	public void draw(Canvas canvas) {
-		canvas.drawBitmap(ball, x - (ball.getWidth() / 2),
-				y - (ball.getHeight() / 2), null);
+		canvas.drawBitmap(getImg(), getX() - (getImg().getWidth() / 2),
+				getY() - (getImg().getHeight() / 2), null);
 	}
 
 	public int getRadius() {
@@ -71,7 +44,7 @@ public class Ball {
 		this.radius = radius;
 	}
 
-	public float getDx() {
+	public double getDx() {
 		return dx;
 	}
 
@@ -79,7 +52,7 @@ public class Ball {
 		this.dx = dx;
 	}
 
-	public float getDy() {
+	public double getDy() {
 		return dy;
 	}
 
@@ -113,8 +86,18 @@ public class Ball {
 	}
 
 	public void update() {
-		x += (this.getDx() * this.getXDirection());
-		y += (this.getDy() * this.getYDirection());
+		setX((int) (getX() + (this.getDx() * this.getXDirection())));
+		setY((int) (getY() + (this.getDy() * this.getYDirection())));
+	}
+
+	public int getAngle() {
+		return angle;
+	}
+
+	public void setAngle(int angle) {
+		this.angle = angle;
+		dx = 15 * Math.cos(Math.toRadians(angle));
+		dy = 15 * Math.sin(Math.toRadians(angle));
 	}
 
 

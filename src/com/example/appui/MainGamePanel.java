@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.example.gamemodels.AbstractModel;
 import com.example.gamemodels.Ball;
 import com.example.gamemodels.Paddle;
 import com.example.gamemodels.AI;
@@ -39,10 +40,10 @@ public class MainGamePanel extends SurfaceView implements
 	private Ball ball;
 	private boolean touchedWall; // true means object has touched wall
 	private boolean isCollision; // true means ball has collided with paddle
-	private int cpuScore;
-	private int userScore;
+	private int balldx;
+	private int balldy;
 	private SoundPool sounds;
-	int scoreboard;
+	private int scoreboard;
 
 	public MainGamePanel(Context context) {
 		super(context);
@@ -51,15 +52,16 @@ public class MainGamePanel extends SurfaceView implements
 
 		// create AI to move around
 		AI = new AI(BitmapFactory.decodeResource(getResources(),
-				R.drawable.paddle), 350, 100, 11);
-
+				R.drawable.paddle), 350, 100, 10);
+		AI.setHeight(AI.getHeight()*-1);
+		AI.setWidth(AI.getWidth()*-1);
 		// create paddle to move around
 		paddle = new Paddle(BitmapFactory.decodeResource(getResources(),
-				R.drawable.paddle), 350, 1100);
+				R.drawable.paddle2), 350, 1100);
 
 		// create ball
 		ball = new Ball(BitmapFactory.decodeResource(getResources(),
-				R.drawable.ball), 250, 300, 9, 13);
+				R.drawable.ball), 250, 500, 45);
 		ball.setXDirection(ball.DIRECTION_LEFT);
 		long randomy = Math.round(Math.random());
 		if (randomy == 0) {
@@ -144,12 +146,12 @@ public class MainGamePanel extends SurfaceView implements
 	// checks whether the edge of each paddle touches the wall
 	public boolean paddleBoundary(MotionEvent event) {
 		setTouchedWall(false);
-		if (event.getX() + paddle.width / 2 >= getWidth()) {
+		if (event.getX() + paddle.getWidth() / 2 >= getWidth()) {
 
-			paddle.setX(getWidth() - paddle.width / 2);
+			paddle.setX(getWidth() - paddle.getWidth() / 2);
 			setTouchedWall(true);
-		} else if (event.getX() - paddle.width / 2 <= 0) {
-			paddle.setX(0 + paddle.width / 2);
+		} else if (event.getX() - paddle.getWidth() / 2 <= 0) {
+			paddle.setX(0 + paddle.getWidth() / 2);
 			setTouchedWall(true);
 		}
 		return isTouchedWall();
@@ -158,11 +160,11 @@ public class MainGamePanel extends SurfaceView implements
 	// check whether the AI paddle has touched the wall
 	public boolean aiBoundary() {
 		setTouchedWall(false);
-		if (AI.getX() + AI.width / 2 >= getWidth()) {
-			AI.setX(getWidth() - AI.width / 2);
+		if (AI.getX() + AI.getWidth() / 2 >= getWidth()) {
+			AI.setX(getWidth() - AI.getWidth() / 2);
 			setTouchedWall(true);
-		} else if (AI.getX() - AI.width / 2 <= 0) {
-			AI.setX(0 + AI.width / 2);
+		} else if (AI.getX() - AI.getWidth() / 2 <= 0) {
+			AI.setX(0 + AI.getWidth() / 2);
 			setTouchedWall(true);
 		}
 		return isTouchedWall();
@@ -172,113 +174,112 @@ public class MainGamePanel extends SurfaceView implements
 	// draws all objects onto the canvas on the surfaceview
 	protected void onDraw(Canvas canvas) {
 
-		canvas.drawColor(Color.WHITE);
+		canvas.drawColor(Color.rgb(236,240,241));
 		paddle.draw(canvas);
 		ball.draw(canvas);
 		AI.draw(canvas);
 
 	}
-	// checks if ball collides with 
-	public void isCollidingPaddle(Paddle paddle, Ball ball) {
-		if (ball.getYDirection() == ball.DIRECTION_DOWN) {
-			if ((ball.getY() + ball.getRadius() > paddle.getY() - paddle.height
-					/ 2)
-					&& (ball.getY() + ball.getRadius() < paddle.getY()
-							+ paddle.height / 2)
-					&& (ball.getX() + ball.getRadius() > paddle.getX()
-							- paddle.width / 4)
-					&& (ball.getX() + ball.getRadius() < paddle.getX()
-							+ paddle.width / 4)) {
 
-				ball.setDy(13);
-				ball.setDx(5);
+	// checks if ball collides with AI or paddle
+	public void isColliding(AbstractModel abm, Ball ball) {
+		if (abm.getClass().isAssignableFrom(Paddle.class)) {
+			if ((ball.getY() + ball.getRadius() > abm.getY() - abm.getHeight()
+					/ 2)
+					&& (ball.getY() + ball.getRadius() < abm.getY()
+							+ abm.getHeight() / 2)
+					&& (ball.getX() + ball.getRadius() > abm.getX()
+							- abm.getWidth() / 4)
+					&& (ball.getX() + ball.getRadius() < abm.getX()
+							+ abm.getWidth() / 4)) {
+
+				ball.setAngle(45);
 				ball.toggleYDirection();
 			}
 
-			if ((ball.getY() + ball.getRadius() > paddle.getY() - paddle.height
+			if ((ball.getY() + ball.getRadius() > abm.getY() - abm.getHeight()
 					/ 2)
-					&& (ball.getY() + ball.getRadius() < paddle.getY()
-							+ paddle.height / 2)
-					&& (ball.getX() + ball.getRadius() > paddle.getX()
-							+ paddle.width / 4)
+					&& (ball.getY() + ball.getRadius() < abm.getY()
+							+ abm.getHeight() / 2)
+					&& (ball.getX() + ball.getRadius() > abm.getX()
+							+ abm.getWidth() / 4)
 					&& (ball.getX() + ball.getRadius() < paddle.getX()
-							+ paddle.width / 2)) {
+							+ abm.getWidth() / 2)) {
 
 				if (ball.getXDirection() == ball.DIRECTION_LEFT) {
 					ball.toggleXDirection();
 				}
 				ball.toggleYDirection();
-				ball.setDx(15);
-				ball.setDy(13);
+				ball.setAngle(65);
 			}
 
-			if ((ball.getY() + ball.getRadius() > paddle.getY() - paddle.height
+			if ((ball.getY() + ball.getRadius() > abm.getY() - abm.getHeight()
 					/ 2)
-					&& (ball.getY() + ball.getRadius() < paddle.getY()
-							+ paddle.height / 2)
-					&& (ball.getX() + ball.getRadius() < paddle.getX()
-							- paddle.width / 4)
-					&& (ball.getX() + ball.getRadius() > paddle.getX()
-							- paddle.width / 2)) {
+					&& (ball.getY() + ball.getRadius() < abm.getY()
+							+ abm.getHeight() / 2)
+					&& (ball.getX() + ball.getRadius() < abm.getX()
+							- abm.getWidth() / 4)
+					&& (ball.getX() + ball.getRadius() > abm.getX()
+							- abm.getWidth() / 2)) {
 
 				if (ball.getXDirection() == ball.DIRECTION_RIGHT) {
 					ball.toggleXDirection();
 				}
 				ball.toggleYDirection();
-				ball.setDx(15);
-				ball.setDy(13);
+				ball.setAngle(65);
 			}
-		}
-	}
+		} else
+		{
+			if ((ball.getY() - ball.getRadius() < abm.getY() - abm.getHeight()
+					/ 2)
+					&& (ball.getY() - ball.getRadius() > abm.getY()
+							+ abm.getHeight() / 2)
+					&& (ball.getX() - ball.getRadius() < abm.getX()
+							- abm.getWidth() / 4)
+					&& (ball.getX() - ball.getRadius() > abm.getX()
+							+ abm.getWidth() / 4)) {
 
-	//Changes speed of ball based on where the ball hits the paddle on the AI
-	public boolean isCollidingAI(AI AI, Ball ball) {
-		if (ball.getYDirection() == ball.DIRECTION_UP) {
-			if ((ball.getY() + ball.getRadius() > AI.getY() - AI.height / 2)
-					&& (ball.getY() + ball.getRadius() < AI.getY() + AI.height
-							/ 2)
-					&& (ball.getX() + ball.getRadius() > AI.getX() - AI.width
-							/ 4)
-					&& (ball.getX() + ball.getRadius() < AI.getX() + AI.width
-							/ 4)) {
-
-				ball.setDy(13);
-				ball.setDx(9);
+				ball.setAngle(45);
 				ball.toggleYDirection();
 			}
-			isCollision = true;
-		}
 
-		if ((ball.getY() + ball.getRadius() > AI.getY() - AI.height / 2)
-				&& (ball.getY() + ball.getRadius() < AI.getY() + AI.height / 2)
-				&& (ball.getX() + ball.getRadius() > AI.getX() + AI.width / 4)
-				&& (ball.getX() + ball.getRadius() < AI.getX() + AI.width / 2)) {
+			if ((ball.getY() - ball.getRadius() < abm.getY() - abm.getHeight()
+					/ 2)
+					&& (ball.getY() - ball.getRadius() > abm.getY()
+							+ abm.getHeight() / 2)
+					&& (ball.getX() - ball.getRadius() < abm.getX()
+							+ abm.getWidth() / 4)
+					&& (ball.getX() - ball.getRadius() > abm.getX()
+							+ abm.getWidth() / 2)) {
 
-			if (ball.getXDirection() == ball.DIRECTION_LEFT) {
-				ball.toggleXDirection();
+				if (ball.getXDirection() == ball.DIRECTION_LEFT) {
+					ball.toggleXDirection();
+				}
+				ball.toggleYDirection();
+				ball.setAngle(65);
 			}
-			ball.toggleYDirection();
-			ball.setDx(15);
-			ball.setDy(13);
-			isCollision = true;
-		}
 
-		if ((ball.getY() + ball.getRadius() > AI.getY() - AI.height / 2)
-				&& (ball.getY() + ball.getRadius() < AI.getY() + AI.height / 2)
-				&& (ball.getX() + ball.getRadius() < AI.getX() - AI.width / 4)
-				&& (ball.getX() + ball.getRadius() > AI.getX() - AI.width / 2)) {
+			if ((ball.getY() - ball.getRadius() < abm.getY() - abm.getHeight()
+					/ 2)
+					&& (ball.getY() - ball.getRadius() > abm.getY()
+							+ abm.getHeight() / 2)
+					&& (ball.getX() - ball.getRadius() < abm.getX()
+							- abm.getWidth() / 4)
+					&& (ball.getX() - ball.getRadius() > abm.getX()
+							- abm.getWidth() / 2)) {
 
-			if (ball.getXDirection() == ball.DIRECTION_RIGHT) {
-				ball.toggleXDirection();
+				if (ball.getXDirection() == ball.DIRECTION_RIGHT) {
+					ball.toggleXDirection();
+				}
+				ball.toggleYDirection();
+				ball.setAngle(65);
 			}
-			ball.toggleYDirection();
-			ball.setDx(15);
-			ball.setDy(13);
-
-			isCollision = true;
+			
 		}
-		return isCollision;
+	
 	}
+
+
 	
 	/* @author Matt Campbell
 	 * Template taken from StackOverflow Question# 4577814. 
@@ -293,11 +294,13 @@ public class MainGamePanel extends SurfaceView implements
 				* ball.getYDirection()*1000));
 		int targetX = (int) (ball.getX() + (ball.getDx() * ball.getXDirection() * 1000)
 				* impactTime);
-
-		if (targetX > AI.getX() + AI.width / 4) {
+		if (targetX == AI.getX() ) {
+			AI.update(ball.getXDirection());
+		}
+		if (targetX > AI.getX()) {
 			AI.update(1);
 		}
-		if (targetX < AI.getX() - AI.width / 4) {
+		if (targetX < AI.getX()) {
 
 			AI.update(-1);
 
@@ -309,34 +312,27 @@ public class MainGamePanel extends SurfaceView implements
 		
 		if ((ball.getY() + ball.getRadius() >= getHeight())
 				&& (ball.getYDirection() == ball.DIRECTION_DOWN)) {
-			cpuScore = cpuScore++;
+			paddle.setScore();
 			
 		}
 		if ((ball.getY() - ball.getRadius() <= 0)
 				&& (ball.getYDirection() == ball.DIRECTION_UP)) {
-			userScore = userScore++;
+			AI.setScore();
 		}
 	}
 	
 	//Changes direction of the ball depending on which wall the ball has hit
-	public void ballBoundaries() {
-		if ((ball.getX() + ball.getRadius() >= getWidth())
-				&& (ball.getXDirection() == ball.DIRECTION_RIGHT)) {
-			ball.toggleXDirection();
-		}
-		if ((ball.getX() - ball.getRadius() <= 0)
-				&& (ball.getXDirection() == ball.DIRECTION_LEFT)) {
-			ball.toggleXDirection();
-		}
+	public void update() {
+		
 	
-		if (touchingWall()) {
-			ball.toggleYDirection();
-		}
-
-		isCollidingPaddle(paddle, ball);
-		isCollidingAI(AI, ball);
-
 		ball.update();
+		moveAI();
+		touchingWall();
+		scoreboard();
+		isColliding(paddle, ball);
+		isColliding(AI, ball);
+
+
 
 	}
 
@@ -348,19 +344,24 @@ public class MainGamePanel extends SurfaceView implements
 		this.touchedWall = touchedWall;
 	}
 
-	public boolean touchingWall() {
+	public void touchingWall() {
 		if ((ball.getY() - ball.getRadius() <= 0)
 				&& (ball.getYDirection() == ball.DIRECTION_UP)) {
 
-			setTouchedWall(true);
+			ball.toggleYDirection();
 		} else if ((ball.getY() + ball.getRadius() >= getHeight())
 				&& (ball.getYDirection() == ball.DIRECTION_DOWN)) {
-			setTouchedWall(true);
-		} else {
-			setTouchedWall(false);
-
+			ball.toggleYDirection();
 		}
-		return isTouchedWall();
+		else if ((ball.getX() + ball.getRadius() >= getWidth())
+					&& (ball.getXDirection() == ball.DIRECTION_RIGHT)) {
+			ball.toggleXDirection();
+			}
+		else if ((ball.getX() - ball.getRadius() <= 0)
+					&& (ball.getXDirection() == ball.DIRECTION_LEFT)) {
+			ball.toggleXDirection();
+			}
+
 	}
 
 }
